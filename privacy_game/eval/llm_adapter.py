@@ -253,6 +253,43 @@ def openai_policy(rp_question: str, profile: dict, history: list) -> str:
     return _sanitize(out)
 
 
+_hf_client = None
+
+
+def hf_inference_policy(rp_question: str, profile: dict, history: list) -> str:
+    """HuggingFace Inference API — FREE alternative to OpenAI / Anthropic.
+
+    Uses the authenticated HF token (same one used to push the adapter).
+    Free tier: ~30K requests/month, ~10 req/min — plenty for n=30 evals.
+
+    Configuration env vars:
+        HF_TOKEN     required — picked up automatically from `hf auth login`
+        HF_MODEL     default: Qwen/Qwen2.5-7B-Instruct (verified working on free tier)
+                     other verified-working free options:
+                       meta-llama/Llama-3.1-8B-Instruct  (note: Llama-3.1 not "Meta-Llama-3.1")
+    """
+    global _hf_client
+    if _hf_client is None:
+        try:
+            from huggingface_hub import InferenceClient
+        except ImportError as e:
+            raise RuntimeError("huggingface_hub required (already a dep)") from e
+        _hf_client = InferenceClient()  # picks up HF_TOKEN from env / login
+
+    model = os.environ.get("HF_MODEL", "Qwen/Qwen2.5-7B-Instruct")
+    prompt = _render_prompt(rp_question, profile, history)
+    system, user = _split_system_user(prompt)
+    resp = _hf_client.chat_completion(
+        model=model,
+        messages=[{"role": "system", "content": system},
+                  {"role": "user", "content": user}],
+        max_tokens=int(os.environ.get("PRIVACY_GAME_LLM_MAX_TOKENS", "120")),
+        temperature=float(os.environ.get("PRIVACY_GAME_LLM_TEMPERATURE", "0.7")),
+    )
+    out = resp.choices[0].message.content or ""
+    return _sanitize(out)
+
+
 def anthropic_policy(rp_question: str, profile: dict, history: list) -> str:
     """Anthropic Messages API as the disclosure agent.
 
