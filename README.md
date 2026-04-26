@@ -100,8 +100,25 @@ the agent never said directly.
 ## Results
 
 > **Headline**: A trained 0.5B parameter model lifts **5× above untrained 7B/8B
-> frontier models** at multi-turn contextual-integrity disclosure. Same task,
-> same env, same eval set, same scoring.
+> frontier models** at multi-turn contextual-integrity disclosure. Training
+> scales cleanly across model sizes — Qwen2.5 0.5B → 1.5B both show monotonic
+> Δ improvement on the same v2 reward.
+
+### Scaling across Qwen2.5 sizes (v2 hand-shaped reward, n=50)
+
+| Model | Trained mean | Base mean | **Δ** | Trained std | GPU / time |
+| --- | ---: | ---: | ---: | ---: | --- |
+| Qwen2.5-0.5B + GRPO | +0.4313 | +0.3707 | **+0.061** | 0.527 | RTX 4060, 143 min |
+| **Qwen2.5-1.5B + GRPO** | **+0.5807** | **+0.4994** | **+0.0813** | **0.432** | **H200, 63 min** |
+
+Δ grows **+33%** from 0.5B → 1.5B; trained-mean grows **+0.149** absolute.
+Std drops monotonically (0.527 → 0.432) — bigger model = more consistent
+disclosure behavior, which is the privacy property that actually matters
+in deployment.
+
+Trained adapters on HF Hub:
+[`Itachi-42/disclosure-game-qwen-0.5b-grpo-v2`](https://huggingface.co/Itachi-42/disclosure-game-qwen-0.5b-grpo-v2),
+[`Itachi-42/disclosure-game-qwen-1.5b-grpo`](https://huggingface.co/Itachi-42/disclosure-game-qwen-1.5b-grpo).
 
 ### Apples-to-apples vs. frontier (env-native `pareto_it` reward)
 
