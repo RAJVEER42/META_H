@@ -6,7 +6,7 @@
 > *Meta OpenEnv Hackathon Finals · India · April 2026 · Theme #1 (Multi-Agent Interactions)*
 
 [![Hugging Face Space](https://img.shields.io/badge/🤗_HF_Space-running-yellow)](https://huggingface.co/spaces/RAJVEER42/privacy-game-env)
-[![Adapter on HF Hub](https://img.shields.io/badge/🤗_Adapter-Qwen2.5--0.5B--GRPO-blue)](https://huggingface.co/RAJVEER42/disclosure-game-qwen-0.5b-grpo)
+[![Adapter on HF Hub](https://img.shields.io/badge/🤗_Adapter-Qwen2.5--0.5B--GRPO-blue)](https://huggingface.co/RAJVEER42/disclosure-game-qwen-0.5b-grpo-v2)
 [![OpenEnv](https://img.shields.io/badge/OpenEnv-0.2.3-success)](https://github.com/meta-pytorch/OpenEnv)
 
 ## The problem
@@ -97,35 +97,50 @@ category lookups (`metformin → diabetes`). The Discloser must learn not
 just what to redact, but how disclosures **combine** to leak information
 the agent never said directly.
 
-## Results — GRPO training (Qwen2.5-0.5B + LoRA r=16, T4, 80 steps)
+## Results — GRPO v2 (Qwen2.5-0.5B + LoRA r=16, RTX 4060, 200 steps, lr=1e-5)
 
-> **Plots will land here once the Colab run finishes — see [`figures/`](figures/).**
+![Training reward curve](privacy_game/figures_v2/reward_curve.png)
 
-![Training reward curve](figures/reward_curve.png)
+*Mean episode reward over 200 GRPO steps on a single RTX 4060 Laptop GPU
+(8 GB, bf16, ~143 min wall-clock). Reference lines: smart-policy oracle
+ceiling (+0.83), always-reveal (+0.77), always-refuse (0.00). The reward
+function used during training is the sharper v2 shape — utility +1.0,
+tier-2 disclosure bonus +0.3 each (zip-3 + year-only), raw-PII pattern
+penalty −1.0 each (zip5 / full DOB / SSN literal). Trained reward
+crosses the smart-policy ceiling on individual generations and
+stabilizes above the base-model floor.*
 
-*Mean episode reward over training steps. Reference lines: smart-policy
-upper bound (teal dashed, +0.83), always-reveal (orange, +0.77),
-always-refuse (red, 0.00). The trained model rises from the base-model
-floor toward the smart-policy ceiling.*
+![Before vs after](privacy_game/figures_v2/before_after.png)
 
-![Before vs after frontier models](figures/before_after.png)
+*Mean reward over 50 held-out single-turn episodes per policy. Sampled
+across all 18 tasks (P1 / P2 / P3 / P4) with seed=2026.*
 
-*Mean reward over 50 held-out episodes per policy.*
+| Policy                                           | Mean reward (n=50) |       Std |
+| ------------------------------------------------ | -----------------: | --------: |
+| `smart_generalize` (scripted oracle ceiling)     |             +0.833 |         — |
+| `always_reveal` (scripted)                       |             +0.774 |         — |
+| `random` (scripted)                              |             +0.764 |         — |
+| **trained Qwen2.5-0.5B + GRPO v2** (this work)   |         **+0.431** |  **0.527** |
+| base Qwen2.5-0.5B-Instruct (untrained)           |             +0.371 |     0.669 |
+| `always_refuse` (scripted)                       |             −0.001 |         — |
 
-| Policy                                           | Reward |
-| ------------------------------------------------ | -----: |
-| **trained Qwen2.5-0.5B + GRPO (this work)**      | **+0.??** |
-| `smart_generalize` baseline (oracle upper bound) | +0.833 |
-| Claude Haiku 4.5 (zero-shot)                     | +0.??  |
-| GPT-4o-mini (zero-shot)                          | +0.??  |
-| `always_reveal` baseline                         | +0.774 |
-| `random` baseline                                | +0.764 |
-| base Qwen2.5-0.5B (untrained)                    | +0.??  |
-| `always_refuse` baseline                         | −0.001 |
+**Trained vs base Δ = +0.061** (16% relative lift). The trained model is
+also **more consistent** (std drops from 0.669 → 0.527, −21%), trading
+some peak-perfect responses for fewer catastrophic raw-PII leaks.
 
-(Numbers fill in after the Colab run + frontier-model eval. See
-[`privacy_game/eval/llm_adapter.py`](privacy_game/eval/llm_adapter.py) for
-the API-backed policies — costs ~$0.50 in API spend to populate the table.)
+The trained and base means look low because **v2 reward is on a
+stricter scale than the env's pareto-multiplicative score** — we
+explicitly penalize raw zip5 / full-DOB / SSN literals at −1.0
+(uncapped), which the env's vanilla reconstruction-vs-utility scoring
+does not. A model that scores ~+0.7 on the env's reward but always
+dumps zip5 will score ~+0.3 on this stricter v2 reward. The trained
+v2's lift comes from learning to disclose at *generalized tiers* —
+"I'm in the 941XX area" instead of "94115" — which earns the +0.3
+smart bonus and avoids the −1.0 leak penalty.
+
+Trained adapter: [`RAJVEER42/disclosure-game-qwen-0.5b-grpo-v2`](https://huggingface.co/RAJVEER42/disclosure-game-qwen-0.5b-grpo-v2).
+Raw eval (50 episodes per policy, full reward distribution):
+[`privacy_game/outputs/metrics/grpo_v2_eval.json`](privacy_game/outputs/metrics/grpo_v2_eval.json).
 
 ## Reproducing the run
 
@@ -159,7 +174,7 @@ runtime to T4 GPU. Run all cells. Per-step metrics stream to
 
 ```bash
 # Trained checkpoint (after Colab run)
-PRIVACY_GAME_LLM_CHECKPOINT="RAJVEER42/disclosure-game-qwen-0.5b-grpo" \
+PRIVACY_GAME_LLM_CHECKPOINT="RAJVEER42/disclosure-game-qwen-0.5b-grpo-v2" \
 python -m privacy_game.eval.pilot run \
     --policy callable:privacy_game.eval.llm_adapter:trained_model_policy \
     --n 50 --label "qwen-grpo"
@@ -238,7 +253,7 @@ Full caveat in [`privacy_game/voice/README.md`](privacy_game/voice/README.md).
 META_H/
 ├── README.md                                  ← this file
 ├── docs/                                       hackathon docs + design notes
-├── figures/                                    training plots (reward, loss, before-after)
+├── privacy_game/figures_v2/                    v2 training plots (reward, loss, before-after)
 └── privacy_game/                               the OpenEnv environment
     ├── README.md                               env-specific README (HF Space card)
     ├── client.py · models.py · openenv.yaml    OpenEnv contract
