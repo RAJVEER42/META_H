@@ -615,8 +615,11 @@
   }
   .msg.you { align-self: flex-end; flex-direction: row-reverse; }
   @keyframes msgIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
+    /* Subtle 4-step overshoot for a satisfying arrival without breaking pixel feel */
+    0%   { opacity: 0; transform: translateY(8px) scale(0.92); }
+    60%  { opacity: 1; transform: translateY(-2px) scale(1.02); }
+    80%  { transform: translateY(0) scale(0.99); }
+    100% { transform: translateY(0) scale(1); }
   }
 
   .avatar {
@@ -869,6 +872,16 @@
   }
   .reward-value .num.positive { color: var(--green); }
   .reward-value .num.negative { color: var(--red); }
+  /* Glow pulse on score arrival — pixel-friendly drop-shadow flash, no blur */
+  .reward-value .num.score-pulse {
+    animation: scorePulse 540ms steps(6, end);
+  }
+  @keyframes scorePulse {
+    0%   { text-shadow: 2px 2px 0 var(--shadow-color), 0 0 0 var(--yellow); transform: scale(1); }
+    25%  { text-shadow: 2px 2px 0 var(--shadow-color), 0 0 8px var(--yellow); transform: scale(1.06); }
+    50%  { text-shadow: 2px 2px 0 var(--shadow-color), 0 0 4px var(--yellow); transform: scale(1.02); }
+    100% { text-shadow: 2px 2px 0 var(--shadow-color), 0 0 0 var(--yellow); transform: scale(1); }
+  }
   .reward-value .lab {
     margin-top: 6px;
     font-family: 'Press Start 2P', monospace;
@@ -1323,21 +1336,38 @@ function buildPixelBar() {
 buildPixelBar();
 
 function setGauge(reward) {
-  // Map reward [-1, +1] → segments [0..16]; midpoint = idx 8
+  // Map reward [-1, +1] → segments [0..16]; midpoint = idx 8.
+  // SEQUENCED FILL: light segments one at a time (30ms each) for an arcade-
+  // style "filling" feel — preserves the pixel look while adding motion.
   const r = Math.max(-1, Math.min(1, reward));
   const segs = document.querySelectorAll("#pixel-bar .seg");
+  // Clear all first (instant)
   segs.forEach((s, i) => {
     s.classList.remove("lit-pos", "lit-neg");
-    if (i === 8) {
-      s.classList.add("midline");
-      return;
-    }
-    if (r >= 0 && i > 8 && i <= 8 + Math.round(r * 8)) {
-      s.classList.add("lit-pos");
-    } else if (r < 0 && i < 8 && i >= 8 + Math.round(r * 8)) {
-      s.classList.add("lit-neg");
-    }
+    if (i === 8) s.classList.add("midline");
   });
+  // Determine target segments to light, in fill-order
+  const toLight = [];
+  if (r >= 0) {
+    for (let i = 9; i <= 8 + Math.round(r * 8); i++) toLight.push([i, "lit-pos"]);
+  } else {
+    for (let i = 7; i >= 8 + Math.round(r * 8); i--) toLight.push([i, "lit-neg"]);
+  }
+  // Sequence them on
+  toLight.forEach(([i, cls], k) => {
+    setTimeout(() => {
+      const s = document.querySelectorAll("#pixel-bar .seg")[i];
+      if (s) s.classList.add(cls);
+    }, k * 35);
+  });
+
+  // Glow pulse on the score number when a new reward arrives
+  const rv = document.getElementById("reward-value");
+  if (rv) {
+    rv.classList.remove("score-pulse");
+    void rv.offsetWidth;  // force reflow so animation restarts
+    rv.classList.add("score-pulse");
+  }
 }
 
 // ─── Toasts ──────────────────────────────────────────────────────────────────
