@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "openenv-privacy_game"
 version = "0.1.0"
-description = "Contextual-Integrity Disclosure Game — multi-agent OpenEnv environment for training LLMs in adversarial-inference-aware information control"
+description = "CIPHER — multi-agent OpenEnv environment for training LLMs in adversarial-inference-aware information control (Contextual-Integrity Privacy via Hardened Episodic Reasoning)"
 requires-python = ">=3.10"
 dependencies = [
     # OpenEnv runtime (FastAPI server + HTTP client)

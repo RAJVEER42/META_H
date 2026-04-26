@@ -1,14 +1,36 @@
 # CIPHER
 
 > **Contextual-Integrity Privacy via Hardened Episodic Reasoning** —
-> an OpenEnv environment that trains LLMs to share what's needed and withhold
-> what isn't, under an adversary that infers what you didn't say.
+> an OpenEnv multi-agent RL environment that trains LLMs to share what's
+> needed and withhold what isn't, under an adversary that infers what you
+> didn't say.
 >
 > *Meta OpenEnv Hackathon Finals · India · April 2026 · Theme #1 (Multi-Agent Interactions)*
 
-[![Hugging Face Space](https://img.shields.io/badge/🤗_HF_Space-Play_Live-yellow)](https://itachi-42-privacy-game-env.hf.space/play)
+[![Hugging Face Space](https://img.shields.io/badge/🤗_HF_Space-Play_Live-yellow)](https://huggingface.co/spaces/Itachi-42/privacy-game-env)
+[![Play in browser](https://img.shields.io/badge/▶_Pixel_UI-Live_Demo-ff69b4)](https://itachi-42-privacy-game-env.hf.space/play)
 [![Adapter on HF Hub](https://img.shields.io/badge/🤗_Adapter-Qwen2.5--0.5B--GRPO-blue)](https://huggingface.co/Itachi-42/disclosure-game-qwen-0.5b-grpo-v2)
 [![OpenEnv](https://img.shields.io/badge/OpenEnv-0.2.3-success)](https://github.com/meta-pytorch/OpenEnv)
+
+> *We are not training a model to redact secrets.*
+> *We are training a model to develop a **privacy instinct.***
+>
+> Share enough to get the job done. Withhold enough to stay safe.
+
+## 📦 Materials for judges
+
+Everything required by the submission spec, in one place:
+
+| Resource | Link |
+| --- | --- |
+| 🤗 **Hugging Face Space** (env, runnable) | <https://huggingface.co/spaces/Itachi-42/privacy-game-env> |
+| ▶️ **Live pixel UI demo** (play in browser) | <https://itachi-42-privacy-game-env.hf.space/play> |
+| 📓 **Training notebook** (Colab T4, runnable) | [`privacy_game/notebooks/grpo_train.py`](privacy_game/notebooks/grpo_train.py) · [recipe](privacy_game/notebooks/README.md) |
+| 📈 **Reward + loss plots** (from real run) | [`privacy_game/figures_v2/`](privacy_game/figures_v2/) |
+| 🤖 **Trained adapters** (3 sizes on HF Hub) | [0.5B](https://huggingface.co/Itachi-42/disclosure-game-qwen-0.5b-grpo-v2) · [1.5B](https://huggingface.co/Itachi-42/disclosure-game-qwen-1.5b-grpo) · [3B](https://huggingface.co/Itachi-42/disclosure-game-qwen-3b-grpo) |
+| 🎬 **<2 min demo video** | *YouTube link added at submission time* |
+| 📊 **Eval JSONs** (50 episodes/policy, full reward dist) | [`privacy_game/outputs/`](privacy_game/outputs/) |
+| 🧠 **Paper roadmap** (post-hackathon) | [`docs/PAPER_ROADMAP.md`](docs/PAPER_ROADMAP.md) |
 
 ## The problem
 
@@ -342,18 +364,33 @@ META_H/
         └── README.md                           5-step Colab recipe
 ```
 
-## Submission checklist (per [official deck pages 26–30](docs/[External]%20Apr%20'26%20OpenEnv%20Hackathon%20Themes%20%26%20Judging%20Criteria.md))
+## Demo script (90 seconds)
+
+1. **Hook**: *"The secret was never said. The adversary inferred it anyway."*
+2. **Leaky baseline**: untrained Qwen2.5-7B / Llama-3.1-8B says
+   `"My ZIP is 94115, DOB 1988-04-12, female"` → adversary recovers
+   `full_name` via Sweeney triangulation.
+3. **Trained CIPHER 0.5B**: same task, same persona, says `"I'm in
+   the 941XX area, born 1988, female"` → adversary fails. Task still
+   approved.
+4. **Reward bar**: utility stays high, reconstruction collapses to
+   zero, reward rises 5×.
+5. **Thesis card**: *"Privacy for agents is not just redaction. It is
+   contextual decision-making under adversarial inference."*
+
+## Submission checklist
 
 - [x] Use OpenEnv (latest release) — `openenv-core 0.2.3`
-- [x] Working training script via TRL — [`notebooks/grpo_train.py`](privacy_game/notebooks/grpo_train.py)
 - [x] Environment / MCPEnvironment base classes used properly
 - [x] Client / server separation
 - [x] Standard Gym-style API (`reset`, `step`, `state`)
 - [x] Valid `openenv.yaml` manifest
 - [x] No reserved tool names (`reset`, `step`, `state`, `close`)
-- [x] README motivates problem, explains env, shows results
-- [ ] Push env to HF Space — *running today*
-- [ ] Loss + reward plots from a real run — *Colab T4 run today*
-- [ ] <2 min YouTube demo — *recording today*
+- [x] Working training script via TRL — [`notebooks/grpo_train.py`](privacy_game/notebooks/grpo_train.py)
+- [x] Loss + reward plots from a real run — [`privacy_game/figures_v2/`](privacy_game/figures_v2/)
+- [x] Pushed environment to HF Space — <https://huggingface.co/spaces/Itachi-42/privacy-game-env>
+- [x] README motivates problem, explains env, shows results, links all materials
+- [ ] <2 min YouTube demo — *link added at submission*
 
-— *Built with ❤️ for the OpenEnv Hackathon. Privacy is contextual; rewards are verifiable.*
+— *Built for the Meta OpenEnv Hackathon Finals · India · April 2026.*
+*Privacy is contextual. Rewards are verifiable. The instinct is learned.*
