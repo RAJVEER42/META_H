@@ -5,8 +5,8 @@
 >
 > *Meta OpenEnv Hackathon Finals · India · April 2026 · Theme #1 (Multi-Agent Interactions)*
 
-[![Hugging Face Space](https://img.shields.io/badge/🤗_HF_Space-running-yellow)](https://huggingface.co/spaces/RAJVEER42/privacy-game-env)
-[![Adapter on HF Hub](https://img.shields.io/badge/🤗_Adapter-Qwen2.5--0.5B--GRPO-blue)](https://huggingface.co/RAJVEER42/disclosure-game-qwen-0.5b-grpo-v2)
+[![Hugging Face Space](https://img.shields.io/badge/🤗_HF_Space-running-yellow)](https://huggingface.co/spaces/Itachi-42/privacy-game-env)
+[![Adapter on HF Hub](https://img.shields.io/badge/🤗_Adapter-Qwen2.5--0.5B--GRPO-blue)](https://huggingface.co/Itachi-42/disclosure-game-qwen-0.5b-grpo-v2)
 [![OpenEnv](https://img.shields.io/badge/OpenEnv-0.2.3-success)](https://github.com/meta-pytorch/OpenEnv)
 
 ## The problem
@@ -138,7 +138,7 @@ v2's lift comes from learning to disclose at *generalized tiers* —
 "I'm in the 941XX area" instead of "94115" — which earns the +0.3
 smart bonus and avoids the −1.0 leak penalty.
 
-Trained adapter: [`RAJVEER42/disclosure-game-qwen-0.5b-grpo-v2`](https://huggingface.co/RAJVEER42/disclosure-game-qwen-0.5b-grpo-v2).
+Trained adapter: [`Itachi-42/disclosure-game-qwen-0.5b-grpo-v2`](https://huggingface.co/Itachi-42/disclosure-game-qwen-0.5b-grpo-v2).
 Raw eval (50 episodes per policy, full reward distribution):
 [`privacy_game/outputs/metrics/grpo_v2_eval.json`](privacy_game/outputs/metrics/grpo_v2_eval.json).
 
@@ -174,7 +174,7 @@ runtime to T4 GPU. Run all cells. Per-step metrics stream to
 
 ```bash
 # Trained checkpoint (after Colab run)
-PRIVACY_GAME_LLM_CHECKPOINT="RAJVEER42/disclosure-game-qwen-0.5b-grpo-v2" \
+PRIVACY_GAME_LLM_CHECKPOINT="Itachi-42/disclosure-game-qwen-0.5b-grpo-v2" \
 python -m privacy_game.eval.pilot run \
     --policy callable:privacy_game.eval.llm_adapter:trained_model_policy \
     --n 50 --label "qwen-grpo"
