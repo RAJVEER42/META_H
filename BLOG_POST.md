@@ -147,7 +147,7 @@ bases on the same 50 held-out episodes:
 > GRPO gives the best privacy-improvement-per-FLOP** for resource-
 > constrained deployments.
 
-![Training reward curve — 200-step GRPO run](privacy_game/figures_v2/reward_curve.png)
+![Training reward curve — 200-step GRPO run](https://huggingface.co/spaces/Itachi-42/CIPHER/resolve/main/figures_v2/reward_curve.png)
 *v2 reward stabilizes above the base-model floor and crosses the
 smart-policy ceiling on individual generations. RTX 4060 Laptop GPU,
 8 GB VRAM, bf16, ~143 min wall-clock.*
@@ -188,7 +188,7 @@ This extends the
 **multi-turn adversarial-inference** regime that actually matters
 in practice.
 
-![Before vs. after, 50 held-out episodes](privacy_game/figures_v2/before_after.png)
+![Before vs. after, 50 held-out episodes](https://huggingface.co/spaces/Itachi-42/CIPHER/resolve/main/figures_v2/before_after.png)
 *Δ = +0.061 mean reward, **21% std reduction** (0.669 → 0.527),
 catastrophic-leak rate cut from 7/50 → 4/50. The trained policy
 trades a few perfect responses for far fewer disastrous ones.*
