@@ -64,7 +64,7 @@ yet at paper standards.
 |---|---|
 | Code | `github.com/RAJVEER42/META_H` |
 | OpenEnv environment package | `privacy_game/` directory |
-| HF Space (live demo) | `huggingface.co/spaces/Itachi-42/privacy-game-env` |
+| HF Space (live demo) | `huggingface.co/spaces/Itachi-42/CIPHER` |
 | Trained adapter — Qwen2.5-0.5B | `huggingface.co/Itachi-42/disclosure-game-qwen-0.5b-grpo-v2` |
 | Trained adapter — Qwen2.5-1.5B | `huggingface.co/Itachi-42/disclosure-game-qwen-1.5b-grpo` |
 | Trained adapter — Qwen2.5-3B | `huggingface.co/Itachi-42/disclosure-game-qwen-3b-grpo` |

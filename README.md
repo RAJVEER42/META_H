@@ -7,8 +7,8 @@
 >
 > *Meta OpenEnv Hackathon Finals · India · April 2026 · Theme #1 (Multi-Agent Interactions)*
 
-[![Hugging Face Space](https://img.shields.io/badge/🤗_HF_Space-Play_Live-yellow)](https://huggingface.co/spaces/Itachi-42/privacy-game-env)
-[![Play in browser](https://img.shields.io/badge/▶_Pixel_UI-Live_Demo-ff69b4)](https://itachi-42-privacy-game-env.hf.space/play)
+[![Hugging Face Space](https://img.shields.io/badge/🤗_HF_Space-Play_Live-yellow)](https://huggingface.co/spaces/Itachi-42/CIPHER)
+[![Play in browser](https://img.shields.io/badge/▶_Pixel_UI-Live_Demo-ff69b4)](https://itachi-42-cipher.hf.space/play)
 [![Adapter on HF Hub](https://img.shields.io/badge/🤗_Adapter-Qwen2.5--0.5B--GRPO-blue)](https://huggingface.co/Itachi-42/disclosure-game-qwen-0.5b-grpo-v2)
 [![OpenEnv](https://img.shields.io/badge/OpenEnv-0.2.3-success)](https://github.com/meta-pytorch/OpenEnv)
 
@@ -23,8 +23,8 @@ Everything required by the submission spec, in one place:
 
 | Resource | Link |
 | --- | --- |
-| 🤗 **Hugging Face Space** (env, runnable) | <https://huggingface.co/spaces/Itachi-42/privacy-game-env> |
-| ▶️ **Live pixel UI demo** (play in browser) | <https://itachi-42-privacy-game-env.hf.space/play> |
+| 🤗 **Hugging Face Space** (env, runnable) | <https://huggingface.co/spaces/Itachi-42/CIPHER> |
+| ▶️ **Live pixel UI demo** (play in browser) | <https://itachi-42-cipher.hf.space/play> |
 | 📓 **Training notebook** (Colab T4, runnable) | [`privacy_game/notebooks/grpo_train.py`](privacy_game/notebooks/grpo_train.py) · [recipe](privacy_game/notebooks/README.md) |
 | 📈 **Reward + loss plots** (from real run) | [`privacy_game/figures_v2/`](privacy_game/figures_v2/) |
 | 🤖 **Trained adapters** (3 sizes on HF Hub) | [0.5B](https://huggingface.co/Itachi-42/disclosure-game-qwen-0.5b-grpo-v2) · [1.5B](https://huggingface.co/Itachi-42/disclosure-game-qwen-1.5b-grpo) · [3B](https://huggingface.co/Itachi-42/disclosure-game-qwen-3b-grpo) |
@@ -388,7 +388,7 @@ META_H/
 - [x] No reserved tool names (`reset`, `step`, `state`, `close`)
 - [x] Working training script via TRL — [`notebooks/grpo_train.py`](privacy_game/notebooks/grpo_train.py)
 - [x] Loss + reward plots from a real run — [`privacy_game/figures_v2/`](privacy_game/figures_v2/)
-- [x] Pushed environment to HF Space — <https://huggingface.co/spaces/Itachi-42/privacy-game-env>
+- [x] Pushed environment to HF Space — <https://huggingface.co/spaces/Itachi-42/CIPHER>
 - [x] README motivates problem, explains env, shows results, links all materials
 - [ ] <2 min YouTube demo — *link added at submission*
 
