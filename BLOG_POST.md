@@ -6,8 +6,13 @@
 
 **Built for the Meta OpenEnv Hackathon Finals · India · April 2026.**
 
+## 🎬 Watch first (if you only have 2 minutes)
+
+[![CIPHER demo video](https://img.youtube.com/vi/YpeJEbbsQno/maxresdefault.jpg)](https://youtu.be/YpeJEbbsQno)
+
 | | |
 |---|---|
+| 🎬 Demo video | <https://youtu.be/YpeJEbbsQno> |
 | 🤗 Live demo (Hugging Face Space) | <https://huggingface.co/spaces/Itachi-42/CIPHER> |
 | ▶️ Play in browser (pixel UI) | <https://itachi-42-cipher.hf.space/play> |
 | 🤖 Trained adapters | [0.5B](https://huggingface.co/Itachi-42/disclosure-game-qwen-0.5b-grpo-v2) · [1.5B](https://huggingface.co/Itachi-42/disclosure-game-qwen-1.5b-grpo) · [3B](https://huggingface.co/Itachi-42/disclosure-game-qwen-3b-grpo) |

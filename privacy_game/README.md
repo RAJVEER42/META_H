@@ -36,6 +36,12 @@ the off-screen adversary's reconstruction attempts in real time.
 
 The default Gradio Playground is also available for raw API testing.
 
+## 🎬 90-second demo
+
+[![CIPHER demo video](https://img.youtube.com/vi/YpeJEbbsQno/maxresdefault.jpg)](https://youtu.be/YpeJEbbsQno)
+
+Watch the project walkthrough on YouTube: <https://youtu.be/YpeJEbbsQno>
+
 ---
 
 ## What this environment teaches
