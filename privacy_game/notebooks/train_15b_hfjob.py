@@ -49,15 +49,19 @@ import time
 from pathlib import Path
 
 # ──────────────────────────────────────────────────────────────────────────────
-# 1. Bootstrap — clone the repo into the job's workspace and install editable
+# 1. Bootstrap — clone the repo into the job's workspace.
+# uv-managed environments don't ship pip; we don't need it. Adding the repo
+# root to sys.path is enough because privacy_game's pyproject sets
+# `package-dir = {"privacy_game" = "."}`, so `import privacy_game` resolves
+# to /tmp/META_H/privacy_game/__init__.py directly without a pip install.
 
 REPO_URL = "https://github.com/RAJVEER42/META_H.git"
 WORKSPACE = Path("/tmp/META_H")
 if not WORKSPACE.exists():
     print(f"cloning {REPO_URL}...", flush=True)
     subprocess.run(["git", "clone", "--depth", "1", REPO_URL, str(WORKSPACE)], check=True)
+# Add /tmp/META_H so `import privacy_game` finds the package
 sys.path.insert(0, str(WORKSPACE))
-subprocess.run([sys.executable, "-m", "pip", "install", "-q", "-e", str(WORKSPACE / "privacy_game")], check=True)
 
 
 # ──────────────────────────────────────────────────────────────────────────────
