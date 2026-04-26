@@ -28,6 +28,7 @@ Everything required by the submission spec, in one place:
 | 📓 **Training notebook** (Colab T4, runnable) | [`privacy_game/notebooks/grpo_train.py`](privacy_game/notebooks/grpo_train.py) · [recipe](privacy_game/notebooks/README.md) |
 | 📈 **Reward + loss plots** (from real run) | [`privacy_game/figures_v2/`](privacy_game/figures_v2/) |
 | 🤖 **Trained adapters** (3 sizes on HF Hub) | [0.5B](https://huggingface.co/Itachi-42/disclosure-game-qwen-0.5b-grpo-v2) · [1.5B](https://huggingface.co/Itachi-42/disclosure-game-qwen-1.5b-grpo) · [3B](https://huggingface.co/Itachi-42/disclosure-game-qwen-3b-grpo) |
+| 📝 **Blog post** (technical writeup, mini-blog) | [`BLOG_POST.md`](BLOG_POST.md) |
 | 🎬 **<2 min demo video** | *YouTube link added at submission time* |
 | 📊 **Eval JSONs** (50 episodes/policy, full reward dist) | [`privacy_game/outputs/`](privacy_game/outputs/) |
 | 🧠 **Paper roadmap** (post-hackathon) | [`docs/PAPER_ROADMAP.md`](docs/PAPER_ROADMAP.md) |
