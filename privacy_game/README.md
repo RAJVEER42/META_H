@@ -25,6 +25,17 @@ Modern LLMs are dangerously eager to please. Ask one to help with a task and it 
 
 ---
 
+## 🎮 Play it in your browser
+
+Visit **[`/play`](/play)** on this Space for a pixel-themed live demo:
+click any persona field on the left to copy it, send replies to the
+relying party, watch the reward gauge fill segment-by-segment, and see
+the off-screen adversary's reconstruction attempts in real time.
+
+The default Gradio Playground is also available for raw API testing.
+
+---
+
 ## What this environment teaches
 
 Four learnable skills, each anchored to a real privacy attack model:

@@ -5,7 +5,7 @@
 >
 > *Meta OpenEnv Hackathon Finals · India · April 2026 · Theme #1 (Multi-Agent Interactions)*
 
-[![Hugging Face Space](https://img.shields.io/badge/🤗_HF_Space-running-yellow)](https://huggingface.co/spaces/Itachi-42/privacy-game-env)
+[![Hugging Face Space](https://img.shields.io/badge/🤗_HF_Space-Play_Live-yellow)](https://itachi-42-privacy-game-env.hf.space/play)
 [![Adapter on HF Hub](https://img.shields.io/badge/🤗_Adapter-Qwen2.5--0.5B--GRPO-blue)](https://huggingface.co/Itachi-42/disclosure-game-qwen-0.5b-grpo-v2)
 [![OpenEnv](https://img.shields.io/badge/OpenEnv-0.2.3-success)](https://github.com/meta-pytorch/OpenEnv)
 
