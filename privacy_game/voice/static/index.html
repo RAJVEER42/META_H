@@ -1872,18 +1872,38 @@ async function finalizeVoice() {
   }
 }
 
+// Pre-warm the voice list — Chrome returns [] on first call until
+// voiceschanged fires, which can swallow the very first TTS.
+let _ttsVoices = [];
+function _loadVoices() {
+  if (!window.speechSynthesis) return;
+  _ttsVoices = speechSynthesis.getVoices() || [];
+}
+if (window.speechSynthesis) {
+  _loadVoices();
+  speechSynthesis.onvoiceschanged = _loadVoices;
+}
+
 function playTTS(text, _voice) {
   if (!window.speechSynthesis || !text) return;
-  try {
-    speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    const voices = speechSynthesis.getVoices();
-    const en = voices.find(v => /^en[-_]/i.test(v.lang)) || voices[0];
-    if (en) u.voice = en;
-    u.rate = 1.0;
-    u.pitch = 1.0;
-    speechSynthesis.speak(u);
-  } catch (e) { /* swallow */ }
+  const _doSpeak = () => {
+    try {
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      const voices = _ttsVoices.length ? _ttsVoices : (speechSynthesis.getVoices() || []);
+      const en = voices.find(v => /^en[-_]/i.test(v.lang)) || voices[0];
+      if (en) u.voice = en;
+      u.rate = 1.0;
+      u.pitch = 1.0;
+      speechSynthesis.speak(u);
+    } catch (e) { /* swallow */ }
+  };
+  // If voices aren't loaded yet, defer once briefly (Chrome cold start).
+  if (!_ttsVoices.length && (!speechSynthesis.getVoices() || !speechSynthesis.getVoices().length)) {
+    setTimeout(_doSpeak, 200);
+  } else {
+    _doSpeak();
+  }
 }
 
 // ─── Keyboard shortcuts ──────────────────────────────────────────────────────
