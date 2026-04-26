@@ -692,7 +692,7 @@ side of your screen.
 ### B5.3  Editing (optional but worth it)
 
 - Open in QuickTime → `Edit → Trim` to cut intro/outro silence
-- (Optional) iMovie: add a 1-sec title card at start ("Contextual-Integrity Disclosure Game · OpenEnv Hackathon")
+- (Optional) iMovie: add a 1-sec title card at start ("CIPHER · OpenEnv Hackathon")
 
 ### B5.4  Upload
 
@@ -716,7 +716,7 @@ write-up. We have the README, but a dedicated HF blog post embeds the
 plots in a public-discoverable medium and **buys storytelling points**.
 
 1. <https://huggingface.co/posts/new>
-2. Title: *"Multi-turn Contextual-Integrity Privacy Game — RL on OpenEnv"*
+2. Title: *"CIPHER — Multi-turn Contextual-Integrity Privacy on OpenEnv"*
 3. Embed the 3 PNGs (drag-drop or paste URLs from your repo)
 4. Body: copy the README's Problem / Environment / Results / Why-RLVR
    sections, trim to ~600 words

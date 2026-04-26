@@ -1,4 +1,6 @@
-# Paper roadmap — turning this hackathon into a publication
+# CIPHER — paper roadmap
+
+*Turning this hackathon into a publication.*
 
 > **Read first.** This doc is for *you, future-you*, returning to this project
 > after the hackathon. It captures the honest state of the research, what
@@ -8,7 +10,8 @@
 >
 > **Author**: Rajveer Bishnoi (RAJVEER42 on GitHub, Itachi-42 on HuggingFace)
 > **Repo**: <https://github.com/RAJVEER42/META_H>
-> **Project name in submission**: *Contextual-Integrity Disclosure Game*
+> **Project name**: *CIPHER — Contextual-Integrity Privacy via Hardened Episodic Reasoning*
+> (a.k.a. the *Disclosure Game* — older internal name, retained as `privacy_game/` Python package)
 > **Hackathon**: Meta OpenEnv Hackathon India, April 2026
 
 ---
@@ -38,7 +41,8 @@ yet at paper standards.
 > evaluation (ConfAIde, Mireshghallah et al. 2023) have been studied, but
 > no public RL environment exists for training agents on **multi-turn
 > contextual-integrity disclosure under adversarial inference**. We
-> introduce the *Contextual-Integrity Disclosure Game*, an OpenEnv-native
+> introduce **CIPHER** (*Contextual-Integrity Privacy via Hardened
+> Episodic Reasoning*), an OpenEnv-native
 > 3-agent game (Discloser, Relying Party, Adversary) with composable
 > rubrics that reward useful disclosure while penalizing reconstruction
 > attacks (Sweeney triangulation, drug→diagnosis inference,
@@ -181,8 +185,9 @@ yet at paper standards.
 **What it includes**: exactly what you have at hackathon submission,
 plus a more honest framing of limitations.
 
-**Title suggestion**: *"The Contextual-Integrity Disclosure Game: a
-Multi-Agent OpenEnv Environment for Privacy-Aware LLM Training"*
+**Title suggestion**: *"CIPHER: Contextual-Integrity Privacy via Hardened
+Episodic Reasoning — A Multi-Agent OpenEnv Environment for Privacy-Aware
+LLM Training"*
 
 **Steps**:
 1. Write 4-page paper using NeurIPS template (or arXiv-ready Markdown

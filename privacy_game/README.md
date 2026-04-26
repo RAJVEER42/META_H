@@ -1,5 +1,5 @@
 ---
-title: Contextual-Integrity Disclosure Game
+title: CIPHER — Contextual-Integrity Privacy via Hardened Episodic Reasoning
 emoji: 🛡️
 colorFrom: blue
 colorTo: purple
@@ -15,9 +15,11 @@ tags:
   - llm-training
 ---
 
-# Contextual-Integrity Disclosure Game
+# CIPHER
 
-> **A multi-agent OpenEnv environment that trains LLMs in *context-aware information control under adversarial inference*.**
+> **Contextual-Integrity Privacy via Hardened Episodic Reasoning** —
+> a multi-agent OpenEnv environment that trains LLMs in *context-aware information
+> control under adversarial inference*.
 
 Modern LLMs are dangerously eager to please. Ask one to help with a task and it shares whatever you tell it without thinking about who else might be listening or what could be inferred from combinations of innocent facts. This environment trains the opposite instinct — through reinforcement learning — by putting the LLM into a multi-agent dialogue game where it must complete real-world tasks (insurance, prescriptions, rental applications) while a frozen adversary tries to reconstruct protected attributes from the transcript.
 

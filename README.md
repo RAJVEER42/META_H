@@ -1,7 +1,8 @@
-# Contextual-Integrity Disclosure Game
+# CIPHER
 
-> **An OpenEnv environment that trains LLMs to share what's needed and withhold
-> what isn't — under an adversary that infers what you didn't say.**
+> **Contextual-Integrity Privacy via Hardened Episodic Reasoning** —
+> an OpenEnv environment that trains LLMs to share what's needed and withhold
+> what isn't, under an adversary that infers what you didn't say.
 >
 > *Meta OpenEnv Hackathon Finals · India · April 2026 · Theme #1 (Multi-Agent Interactions)*
 
