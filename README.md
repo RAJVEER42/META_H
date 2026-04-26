@@ -30,15 +30,18 @@ Everything required by the submission spec, in one place:
 | 📈 **Reward + loss plots** (from real run) | [`privacy_game/figures_v2/`](privacy_game/figures_v2/) |
 | 🤖 **Trained adapters** (3 sizes on HF Hub) | [0.5B](https://huggingface.co/Itachi-42/disclosure-game-qwen-0.5b-grpo-v2) · [1.5B](https://huggingface.co/Itachi-42/disclosure-game-qwen-1.5b-grpo) · [3B](https://huggingface.co/Itachi-42/disclosure-game-qwen-3b-grpo) |
 | 📝 **Blog post** (technical writeup, mini-blog) | [`BLOG_POST.md`](BLOG_POST.md) |
-| 🎬 **<2 min demo video** | <https://youtu.be/YpeJEbbsQno> |
+| 🎬 **<2 min demo video** (screen recording) | <https://youtu.be/YpeJEbbsQno> |
+| 🎙️ **Deep-dive walkthrough** (longer, narrated) | <https://youtu.be/OnEKRTlZOec> |
 | 📊 **Eval JSONs** (50 episodes/policy, full reward dist) | [`privacy_game/outputs/`](privacy_game/outputs/) |
 | 🧠 **Paper roadmap** (post-hackathon) | [`docs/PAPER_ROADMAP.md`](docs/PAPER_ROADMAP.md) |
 
 ## 🎬 Watch the demo
 
-[![CIPHER demo video](https://img.youtube.com/vi/YpeJEbbsQno/maxresdefault.jpg)](https://youtu.be/YpeJEbbsQno)
-
-*90-second walkthrough — problem, environment, training, results.*
+| The proof — live screen recording | The pitch — deep-dive walkthrough |
+|---|---|
+| [![CIPHER demo screen recording](https://img.youtube.com/vi/YpeJEbbsQno/maxresdefault.jpg)](https://youtu.be/YpeJEbbsQno) | [![CIPHER explainer](https://img.youtube.com/vi/OnEKRTlZOec/maxresdefault.jpg)](https://youtu.be/OnEKRTlZOec) |
+| Env running live, reward bar in motion, before/after behavior. | Problem, environment design, GRPO training, what the agent learned. |
+| <https://youtu.be/YpeJEbbsQno> | <https://youtu.be/OnEKRTlZOec> |
 
 ## The problem
 
@@ -398,7 +401,7 @@ META_H/
 - [x] Loss + reward plots from a real run — [`privacy_game/figures_v2/`](privacy_game/figures_v2/)
 - [x] Pushed environment to HF Space — <https://huggingface.co/spaces/Itachi-42/CIPHER>
 - [x] README motivates problem, explains env, shows results, links all materials
-- [x] <2 min YouTube demo — <https://youtu.be/YpeJEbbsQno>
+- [x] <2 min YouTube demo — <https://youtu.be/YpeJEbbsQno> · [deep-dive](https://youtu.be/OnEKRTlZOec)
 
 — *Built for the Meta OpenEnv Hackathon Finals · India · April 2026.*
 *Privacy is contextual. Rewards are verifiable. The instinct is learned.*

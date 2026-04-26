@@ -36,11 +36,12 @@ the off-screen adversary's reconstruction attempts in real time.
 
 The default Gradio Playground is also available for raw API testing.
 
-## 🎬 90-second demo
+## 🎬 Watch the demo
 
-[![CIPHER demo video](https://img.youtube.com/vi/YpeJEbbsQno/maxresdefault.jpg)](https://youtu.be/YpeJEbbsQno)
-
-Watch the project walkthrough on YouTube: <https://youtu.be/YpeJEbbsQno>
+| The proof — live screen recording | The pitch — deep-dive walkthrough |
+|---|---|
+| [![CIPHER demo](https://img.youtube.com/vi/YpeJEbbsQno/maxresdefault.jpg)](https://youtu.be/YpeJEbbsQno) | [![CIPHER explainer](https://img.youtube.com/vi/OnEKRTlZOec/maxresdefault.jpg)](https://youtu.be/OnEKRTlZOec) |
+| <https://youtu.be/YpeJEbbsQno> | <https://youtu.be/OnEKRTlZOec> |
 
 ---
 
