@@ -1761,18 +1761,74 @@ document.getElementById("msg-input").addEventListener("keydown", (e) => {
   if (e.key === "Enter") sendText();
 });
 
-// ─── Voice mode ──────────────────────────────────────────────────────────────
+// ─── Voice mode (browser Web Speech API — no server deps) ────────────────────
+const _SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition = null;
+let voiceTranscript = "";
+let voicePlaceholder = null;
+
+if (_SR) {
+  recognition = new _SR();
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.lang = "en-US";
+  recognition.onresult = (e) => {
+    let interim = "";
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const t = e.results[i][0].transcript;
+      if (e.results[i].isFinal) voiceTranscript += t;
+      else interim += t;
+    }
+    if (voicePlaceholder) {
+      const display = (voiceTranscript + interim).trim();
+      voicePlaceholder.querySelector(".bubble").innerHTML =
+        `<div class="meta">You</div>${display ? escapeHtml(display) : "<em>listening…</em>"}`;
+    }
+  };
+  recognition.onerror = (e) => {
+    if (voicePlaceholder) {
+      voicePlaceholder.querySelector(".bubble").innerHTML =
+        `<div class="meta">You</div><em style="color:var(--red)">voice error: ${escapeHtml(e.error || "unknown")}</em>`;
+      voicePlaceholder = null;
+    }
+    if (isRecording) {
+      isRecording = false;
+      clearInterval(recordTimer);
+      document.getElementById("mic-btn").classList.remove("recording");
+      document.getElementById("rec-indicator").classList.remove("active");
+    }
+  };
+  recognition.onend = () => {
+    if (isRecording) {
+      isRecording = false;
+      clearInterval(recordTimer);
+      document.getElementById("mic-btn").classList.remove("recording");
+      document.getElementById("rec-indicator").classList.remove("active");
+    }
+    finalizeVoice();
+  };
+}
+
 async function toggleRecording() {
   if (!sessionId || terminated) return;
+  if (!recognition) {
+    toast("Voice mode needs Chrome / Edge / Safari", "error");
+    return;
+  }
 
   if (!isRecording) {
+    voiceTranscript = "";
+    const log = document.getElementById("chat-log");
+    voicePlaceholder = document.createElement("div");
+    voicePlaceholder.className = "msg you";
+    voicePlaceholder.innerHTML = `
+      <div class="avatar you">P1</div>
+      <div class="bubble"><div class="meta">You</div><em>listening…</em></div>`;
+    log.appendChild(voicePlaceholder);
+    log.scrollTop = log.scrollHeight;
+
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({audio: true});
-      mediaRecorder = new MediaRecorder(stream, {mimeType: "audio/webm;codecs=opus"});
-      recordedChunks = [];
-      mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
-      mediaRecorder.onstop = () => sendVoice();
-      mediaRecorder.start();
+      recognition.start();
       isRecording = true;
       recordStart = performance.now();
       document.getElementById("mic-btn").classList.add("recording");
@@ -1783,56 +1839,50 @@ async function toggleRecording() {
       }, 50);
     } catch (err) {
       toast("Microphone access denied", "error");
+      if (voicePlaceholder) { voicePlaceholder.remove(); voicePlaceholder = null; }
     }
   } else {
-    mediaRecorder.stop();
-    mediaRecorder.stream.getTracks().forEach(t => t.stop());
-    isRecording = false;
-    clearInterval(recordTimer);
-    document.getElementById("mic-btn").classList.remove("recording");
-    document.getElementById("rec-indicator").classList.remove("active");
+    try { recognition.stop(); } catch (e) {}
   }
 }
 
-async function sendVoice() {
-  const blob = new Blob(recordedChunks, {type: "audio/webm"});
-  const log = document.getElementById("chat-log");
-  const placeholder = document.createElement("div");
-  placeholder.className = "msg you";
-  placeholder.innerHTML = `
-    <div class="avatar you">P1</div>
-    <div class="bubble transcribing"><div class="meta">You</div>transcribing…</div>`;
-  log.appendChild(placeholder);
-  log.scrollTop = log.scrollHeight;
+async function finalizeVoice() {
+  const text = voiceTranscript.trim();
+  if (voicePlaceholder) {
+    voicePlaceholder.querySelector(".bubble").innerHTML =
+      `<div class="meta">You</div>${text ? escapeHtml(text) : "<em>(no speech detected)</em>"}`;
+    voicePlaceholder = null;
+  }
+  if (!text) return;
 
   appendTypingBubble("rp");
-
-  const fd = new FormData();
-  fd.append("audio", blob, "clip.webm");
   try {
-    const res = await fetch(`/api/step-voice/${sessionId}`, {method: "POST", body: fd});
-    if (!res.ok) throw new Error("voice step failed");
+    const res = await fetch(`/api/step/${sessionId}`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({message: text}),
+    });
+    if (!res.ok) throw new Error("step failed");
     const j = await res.json();
-    placeholder.querySelector(".bubble").classList.remove("transcribing");
-    placeholder.querySelector(".bubble").innerHTML = `<div class="meta">You</div>${escapeHtml(j.transcribed || "")}`;
     if (pendingTypingBubble) { pendingTypingBubble.remove(); pendingTypingBubble = null; }
     applyObservation(j.observation);
   } catch (e) {
-    placeholder.querySelector(".bubble").innerHTML = `<div class="meta">You</div><em style="color:var(--red)">voice step failed</em>`;
     if (pendingTypingBubble) { pendingTypingBubble.remove(); pendingTypingBubble = null; }
-    toast("Voice step failed", "error");
+    toast("Step failed", "error");
   }
 }
 
-async function playTTS(text, voice) {
+function playTTS(text, _voice) {
+  if (!window.speechSynthesis || !text) return;
   try {
-    const res = await fetch(`/api/tts?voice=${voice}&text=${encodeURIComponent(text)}`);
-    if (!res.ok) return;
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    const a = new Audio(url);
-    a.play();
-    a.onended = () => URL.revokeObjectURL(url);
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    const voices = speechSynthesis.getVoices();
+    const en = voices.find(v => /^en[-_]/i.test(v.lang)) || voices[0];
+    if (en) u.voice = en;
+    u.rate = 1.0;
+    u.pitch = 1.0;
+    speechSynthesis.speak(u);
   } catch (e) { /* swallow */ }
 }
 
