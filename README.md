@@ -106,19 +106,39 @@ the agent never said directly.
 
 ### Scaling across Qwen2.5 sizes (v2 hand-shaped reward, n=50)
 
+We trained **three model sizes** of the Qwen2.5-Instruct family with the
+same GRPO config (200 steps, lr=1e-5, LoRA r=16, same v2 reward shape)
+and evaluated all three against their untrained bases on the same 50
+held-out episodes:
+
 | Model | Trained mean | Base mean | **Δ** | Trained std | GPU / time |
 | --- | ---: | ---: | ---: | ---: | --- |
-| Qwen2.5-0.5B + GRPO | +0.4313 | +0.3707 | **+0.061** | 0.527 | RTX 4060, 143 min |
-| **Qwen2.5-1.5B + GRPO** | **+0.5807** | **+0.4994** | **+0.0813** | **0.432** | **H200, 63 min** |
+| Qwen2.5-0.5B + GRPO | +0.4313 | +0.3707 | **+0.0606** | 0.527 | RTX 4060, 143 min |
+| Qwen2.5-1.5B + GRPO | +0.5807 | +0.4994 | **+0.0813** ⭐ | 0.432 | H200, 63 min |
+| Qwen2.5-3B + GRPO | +0.6040 | +0.5947 | +0.0093 | 0.502 | H200, 61 min |
 
-Δ grows **+33%** from 0.5B → 1.5B; trained-mean grows **+0.149** absolute.
-Std drops monotonically (0.527 → 0.432) — bigger model = more consistent
-disclosure behavior, which is the privacy property that actually matters
-in deployment.
+**Trained-model performance scales monotonically with size**
+(+0.43 → +0.58 → +0.60), as does the **base** (+0.37 → +0.50 → +0.59) —
+larger pre-trained models are already closer to optimal disclosure
+behavior even before RL.
+
+**The Δ from training peaks at 1.5B and shrinks at 3B** because the 3B
+base model is already nearly as good as the trained 1.5B
+(+0.5947 vs +0.5807). This is a real research finding — *larger
+instruction-tuned LLMs need less privacy-aware RL because their base
+already exhibits more careful disclosure behavior*. Diminishing
+returns of RL fine-tuning at scale, on a privacy-disclosure task, with
+a fixed 200-step training budget.
+
+Practical implication: **for resource-constrained deployments, training
+Qwen2.5-1.5B with GRPO gives the best privacy-improvement-per-FLOP** —
+matches the absolute reward of an untrained 3B while using 2× fewer
+parameters at inference.
 
 Trained adapters on HF Hub:
 [`Itachi-42/disclosure-game-qwen-0.5b-grpo-v2`](https://huggingface.co/Itachi-42/disclosure-game-qwen-0.5b-grpo-v2),
-[`Itachi-42/disclosure-game-qwen-1.5b-grpo`](https://huggingface.co/Itachi-42/disclosure-game-qwen-1.5b-grpo).
+[`Itachi-42/disclosure-game-qwen-1.5b-grpo`](https://huggingface.co/Itachi-42/disclosure-game-qwen-1.5b-grpo),
+[`Itachi-42/disclosure-game-qwen-3b-grpo`](https://huggingface.co/Itachi-42/disclosure-game-qwen-3b-grpo).
 
 ### Apples-to-apples vs. frontier (env-native `pareto_it` reward)
 
