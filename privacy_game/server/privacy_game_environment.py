@@ -196,8 +196,15 @@ class PrivacyGameEnvironment(Environment):
         ep = sample_episode(profiles, self._rng, force_task_id=self._force_task_id)
         self._episode = ep
 
-        # Spin up RP
-        self._rp = RelyingParty(ep.task, ep.profile, ep.extras, self._rng)
+        # Spin up RP with its OWN per-episode RNG. Sharing self._rng with the
+        # RP causes RNG drift across cells: different agents produce different
+        # conversation lengths, which consumes different amounts from self._rng,
+        # so the next episode's task draw diverges. By giving the RP an isolated
+        # RNG (deterministically seeded from one int of self._rng), we keep
+        # task sampling reproducible regardless of agent behavior — required
+        # for paired evaluation across cells.
+        rp_rng = random.Random(self._rng.randint(0, 2**31 - 1))
+        self._rp = RelyingParty(ep.task, ep.profile, ep.extras, rp_rng)
 
         # Reset per-episode mutable state
         self._history = []
