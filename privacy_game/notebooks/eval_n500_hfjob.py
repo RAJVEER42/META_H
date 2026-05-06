@@ -222,6 +222,29 @@ all_results = {}
 cells_to_run = CELLS[:1] if SMOKE_TEST else CELLS
 print(f"\n{'SMOKE TEST' if SMOKE_TEST else 'FULL EVAL'}: {len(cells_to_run)} cells × n={N_EPISODES}\n", flush=True)
 
+# create the dataset repo up-front so per-cell uploads can target it
+from huggingface_hub import HfApi
+api = HfApi()
+api.create_repo(repo_id=TARGET_REPO, repo_type="dataset", exist_ok=True, private=False)
+print(f"Target dataset repo: https://huggingface.co/datasets/{TARGET_REPO}\n", flush=True)
+
+
+def upload_cell(cell_dir: Path, label: str):
+    """Push this cell's files to the dataset repo immediately so partial
+    timeouts/cancellations don't lose all completed cells."""
+    try:
+        api.upload_folder(
+            folder_path=str(cell_dir),
+            path_in_repo=label,
+            repo_id=TARGET_REPO,
+            repo_type="dataset",
+            commit_message=f"{label} @ n={N_EPISODES} seed={EVAL_SEED}",
+        )
+        print(f"  uploaded {label} -> {TARGET_REPO}/{label}/", flush=True)
+    except Exception as e:
+        print(f"  WARN: upload of {label} failed: {e}", flush=True)
+
+
 for label, base_model, ckpt in cells_to_run:
     print(f"\n========== {label} ==========", flush=True)
     pipe = load_pipeline(base_model, ckpt)
@@ -251,6 +274,9 @@ for label, base_model, ckpt in cells_to_run:
     with open(cell_dir / "summary.json", "w") as f:
         json.dump(summ, f, indent=2)
 
+    # push immediately so a later timeout/error doesn't lose this cell
+    upload_cell(cell_dir, label)
+
     all_summaries[label] = summ
     all_results[label] = results
 
@@ -276,16 +302,16 @@ for label in all_summaries:
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-# 7. Push to HF Hub
+# 7. Push aggregate summary to HF Hub (per-cell uploads already happened above)
 
-from huggingface_hub import HfApi
-
-api = HfApi()
-api.create_repo(repo_id=TARGET_REPO, repo_type="dataset", exist_ok=True, private=False)
-api.upload_folder(
-    folder_path=str(OUT_DIR),
-    repo_id=TARGET_REPO,
-    repo_type="dataset",
-    commit_message=f"n={N_EPISODES} eval, seed={EVAL_SEED}, reward={REWARD_MODE} — 5 cells (base + 3 GRPO seeds + SFT)",
-)
-print(f"\nUploaded to https://huggingface.co/datasets/{TARGET_REPO}", flush=True)
+try:
+    api.upload_file(
+        path_or_fileobj=str(OUT_DIR / "all_summary.json"),
+        path_in_repo="all_summary.json",
+        repo_id=TARGET_REPO,
+        repo_type="dataset",
+        commit_message=f"all_summary @ n={N_EPISODES} seed={EVAL_SEED} reward={REWARD_MODE}",
+    )
+    print(f"\nUploaded all_summary.json to https://huggingface.co/datasets/{TARGET_REPO}", flush=True)
+except Exception as e:
+    print(f"\nWARN: aggregate upload failed: {e}", flush=True)
