@@ -105,11 +105,12 @@ def load_pipeline(base_model: str, checkpoint: str | None):
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
 
+    # Plain .to(device) instead of device_map= to avoid accelerate hook conflict
+    # with pipeline's device= argument.
     model = AutoModelForCausalLM.from_pretrained(
         base_model,
-        torch_dtype=torch.float16 if DEVICE == "cuda" else "auto",
-        device_map=DEVICE,
-    )
+        torch_dtype=torch.float16 if DEVICE == "cuda" else torch.float32,
+    ).to(DEVICE)
 
     if checkpoint:
         from peft import PeftModel
