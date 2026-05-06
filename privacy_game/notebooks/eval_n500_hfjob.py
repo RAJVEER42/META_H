@@ -86,11 +86,12 @@ CELLS = [
     ("0.5b-sft-baseline", BASE_MODEL, "Itachi-42/cipher-qwen-0.5b-sft-baseline"),
 ]
 
-N_EPISODES = 500
+N_EPISODES = int(os.environ.get("CIPHER_EVAL_N", "500"))  # override for smoke tests
 EVAL_SEED = 0
 REWARD_MODE = "pareto_it"
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-TARGET_REPO = "Itachi-42/cipher-eval-v3-0.5b"
+TARGET_REPO = os.environ.get("CIPHER_EVAL_REPO", "Itachi-42/cipher-eval-v3-0.5b")
+SMOKE_TEST = N_EPISODES <= 10  # if smoke-mode, only eval cell 1
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -218,7 +219,10 @@ def summarize(results: list[dict]) -> dict:
 all_summaries = {}
 all_results = {}
 
-for label, base_model, ckpt in CELLS:
+cells_to_run = CELLS[:1] if SMOKE_TEST else CELLS
+print(f"\n{'SMOKE TEST' if SMOKE_TEST else 'FULL EVAL'}: {len(cells_to_run)} cells × n={N_EPISODES}\n", flush=True)
+
+for label, base_model, ckpt in cells_to_run:
     print(f"\n========== {label} ==========", flush=True)
     pipe = load_pipeline(base_model, ckpt)
     policy = make_policy(pipe)
