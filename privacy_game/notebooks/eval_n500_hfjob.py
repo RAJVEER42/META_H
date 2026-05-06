@@ -117,11 +117,13 @@ def load_pipeline(base_model: str, checkpoint: str | None):
         model = PeftModel.from_pretrained(model, checkpoint)
         model = model.merge_and_unload()  # bake adapter into weights
 
+    # Don't pass device= — transformers 5.x attaches accelerate hooks even
+    # without explicit device_map, and pipeline rejects device= when those
+    # hooks exist. Model is already on the right device via .to(DEVICE).
     pipe = pipeline(
         "text-generation",
         model=model,
         tokenizer=tok,
-        device=0 if DEVICE == "cuda" else -1,
         max_new_tokens=120,
         do_sample=True,
         temperature=0.7,
